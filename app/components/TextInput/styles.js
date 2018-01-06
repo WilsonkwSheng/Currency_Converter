@@ -6,7 +6,7 @@ const BORDER_RADIUS = 4;
 
 export default EStyleSheet.create({
     $buttonBackgroundColorBase: '$white',
-    $buttonBackgroundColorModifier: 0.1,
+    $buttonBackgroundColorModifier: 0.2,
 
     container: {
         backgroundColor: '$white',
