@@ -1,15 +1,91 @@
-import React from 'react';
-import { View, Image, Text, ImageBackground } from 'react-native';
+import React, { Component } from 'react';
+import { View, Text, Keyboard, Animated, Platform } from 'react-native';
 
 import styles from './styles';
 
-const Logo = () => (
-    <View style={styles.container}>
-        <ImageBackground resizeMode="contain" style={styles.containerImage} source={require('./images/background.png')}>
-          <Image resizeMode="contain" style={styles.image} source={require('./images/logo.png')} />
-        </ImageBackground>
-        <Text style={styles.text}>Currency Converter</Text>
-    </View>
-);
+const ANIMATION_DURATION = 250;
+
+class Logo extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state= {
+            containerImageWidth: new Animated.Value(styles.$largeContainerSize),
+            imageWidth: new Animated.Value(styles.$largeImageSize),
+        };
+    }
+
+    componentDidMount() {
+        let showListener = 'keyboardWillShow';
+        let hideListener = 'keyboardWillHide';
+        if (Platform.OS === 'android') {
+            showListener = 'keyboardDidShow';
+            hideListener = 'keyboardDidHide';
+        }
+        this.keyboardShowListener = Keyboard.addListener(showListener, this.keyboardShow);
+        this.keyboardHideListener = Keyboard.addListener(hideListener, this.keyboardHide);
+    }
+
+    componentWillUnmount() {
+        this.keyboardShowListener.remove();
+        this.keyboardHideListener.remove();
+    }
+
+    keyboardShow = () => {
+        Animated.parallel([
+            Animated.timing(this.state.containerImageWidth, {
+                toValue: styles.$smallContainerSize,
+                duration: ANIMATION_DURATION,
+            }),
+            Animated.timing(this.state.imageWidth, {
+                toValue: styles.$smallImageSize,
+                duration: ANIMATION_DURATION,
+            }),
+        ]).start();
+    };
+
+    keyboardHide = () => {
+        Animated.parallel([
+            Animated.timing(this.state.containerImageWidth, {
+                toValue: styles.$largeContainerSize,
+                duration: ANIMATION_DURATION,
+            }),
+            Animated.timing(this.state.imageWidth, {
+                toValue: styles.$largeImageSize,
+                duration: ANIMATION_DURATION,
+            }),
+        ]).start();
+    };
+
+    render() {
+        const containerImageStyle = [
+            styles.containerImage,
+            { width: this.state.containerImageWidth, height: this.state.containerImageWidth },
+        ];
+
+        const imageStyle = [
+            styles.logo,
+            { width: this.state.imageWidth },
+        ];
+
+        return (
+            <View style={styles.container}>
+                <Animated.View style={containerImageStyle}>
+                    <Animated.Image 
+                        resizeMode="contain" 
+                        style={[styles.absolute, containerImageStyle]} 
+                        source={require('./images/background.png')} 
+                    />
+                    <Animated.Image 
+                        resizeMode="contain" 
+                        style={imageStyle} 
+                        source={require('./images/logo.png')} 
+                    />
+                </Animated.View>
+                <Text style={styles.text}>Currency Converter</Text>
+            </View>
+        );
+    }
+}
 
 export default Logo;
