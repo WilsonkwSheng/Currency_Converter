@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 
 import Navigator from './config/routes';
 import { AlertProvider } from './components/Alert';
-import store from './config/store';
+import store from './config/stores';
 
 // import './reducers'; debugging purpose
 
