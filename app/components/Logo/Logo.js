@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { View, Text, Keyboard, Animated, Platform } from 'react-native';
 
 import styles from './styles';
@@ -6,6 +7,10 @@ import styles from './styles';
 const ANIMATION_DURATION = 250;
 
 class Logo extends Component {
+    static propTypes = {
+        tintColor: PropTypes.string,
+    };
+
     constructor(props) {
         super(props);
 
@@ -66,6 +71,7 @@ class Logo extends Component {
         const imageStyle = [
             styles.logo,
             { width: this.state.imageWidth },
+            this.props.tintColor ? { tintColor: this.props.tintColor } : null,
         ];
 
         return (
